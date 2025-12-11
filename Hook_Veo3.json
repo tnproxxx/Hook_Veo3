@@ -192,6 +192,34 @@
     },
     {
       "parameters": {
+        "method": "GET",
+        "url": "https://labs.google/fx/api/auth/session",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -816,
+        816
+      ],
+      "id": "21772cb3-a1b2-4aab-b5ab-d351d0c997db",
+      "name": "Fetch_Session"
+    },
+    {
+      "parameters": {
+        "jsCode": "const root = items[0].json;\\nconst body = root.body || {};\\n\\nfunction safeJson(value) {\\n  if (value && typeof value === 'object') {\\n    return value;\\n  }\\n\\n  if (typeof value === 'string') {\\n    try {\\n      return JSON.parse(value);\\n    } catch (error) {\\n      // ignore parsing errors\\n    }\\n  }\\n\\n  return undefined;\\n}\\n\\nfunction extractFromText(text) {\\n  if (typeof text !== 'string') return undefined;\\n\\n  const accessMatch = /\\\"access_token\\\"\\s*:\\s*\\\"([^\\\"]+)\\\"|access_token=([\\\\w.-]+)/.exec(text);\\n  const apiMatch = /\\\"api_key\\\"\\s*:\\s*\\\"([^\\\"]+)\\\"/.exec(text);\\n  const expiresMatch = /\\\"expires\\\"\\s*:\\s*\\\"([^\\\"]+)\\\"/.exec(text);\\n  const userMatch = /\\\"user\\\"\\s*:\\s*(\\{[^}]+\\})/m.exec(text);\\n\\n  let user;\\n  if (userMatch && userMatch[1]) {\\n    try {\\n      user = JSON.parse(userMatch[1]);\\n    } catch (error) {\\n      // ignore parsing errors\\n    }\\n  }\\n\\n  const access_token = accessMatch?.[1] || accessMatch?.[2];\\n  const api_key = apiMatch?.[1];\\n  const expires = expiresMatch?.[1];\\n\\n  if (!access_token && !api_key && !expires && !user) return undefined;\\n\\n  return { access_token, api_key, expires, user };\\n}\\n\\nconst rawBlock = body.token_block ?? body.session ?? body.raw ?? body.token ?? body;\\n\\nconst candidates = [\\n  safeJson(rawBlock),\\n  extractFromText(rawBlock),\\n  safeJson(body.token),\\n  {\\n    access_token: body.access_token,\\n    api_key: body.api_key || body.project_id,\\n    expires: body.expires,\\n    user: body.user\\n  },\\n  $items(\\\"Fetch_Session\\\", \\\"main\\\", 0)?.[0]?.json\\n];\\n\\nconst chosen = candidates.find(c => c && (c.access_token || c.api_key));\\n\\nconst access_token = chosen?.access_token || body.access_token;\\nconst api_key = chosen?.api_key || body.api_key;\\nconst expires = chosen?.expires || body.expires;\\nconst user = chosen?.user || body.user;\\n\\nconst header = { \\\"Content-Type\\\": \\\"application/json\\\" };\\n\\nif (access_token) {\\n  header.Authorization = `Bearer ${access_token}`;\\n}\\n\\nreturn [\\n  {\\n    json: {\\n      ...root,\\n      Token: {\\n        api_key: api_key || access_token || undefined,\\n        access_token: access_token || api_key || undefined,\\n        expires,\\n        user,\\n        header\\n      }\\n    }\\n  }\\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        688
+      ],
+      "id": "6fcab55c-86c5-4f18-8017-e7a9cce2d92e",
+      "name": "Auto_Filter_Token"
+    },
+    {
+      "parameters": {
         "amount": 11
       },
       "type": "n8n-nodes-base.wait",
@@ -257,7 +285,7 @@
         "url": "https://aisandbox-pa.googleapis.com/v1/video:batchCheckAsyncVideoGenerationStatus",
         "sendHeaders": true,
         "specifyHeaders": "json",
-        "jsonHeaders": "={{ JSON.stringify($('Body').item.json.body.token.header) }}",
+        "jsonHeaders": "={{ JSON.stringify($('TOKEN_VEO3').item.json.Token.header) }}",
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "Text",
@@ -302,7 +330,7 @@
         "url": "=https://aisandbox-pa.googleapis.com/v1/projects/{{ $json.project_id }}/flowMedia:batchGenerateImages\n",
         "sendHeaders": true,
         "specifyHeaders": "json",
-        "jsonHeaders": "={{ JSON.stringify($('Body').item.json.body.token.header) }}",
+        "jsonHeaders": "={{ JSON.stringify($('TOKEN_VEO3').item.json.Token.header) }}",
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify($json.payload) }}",
@@ -340,7 +368,7 @@
         "url": "={{ $json.url }}",
         "sendHeaders": true,
         "specifyHeaders": "json",
-        "jsonHeaders": "={{ JSON.stringify($('Body').item.json.body.token.header) }}",
+        "jsonHeaders": "={{ JSON.stringify($('TOKEN_VEO3').item.json.Token.header) }}",
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify($json.payload) }}",
@@ -753,7 +781,7 @@
             {
               "id": "95ffff0a-f547-4a27-a101-05d51e120191",
               "name": "Token",
-              "value": "={\n  \"api_key\": \"ya29.a0ATi6K2vgkrFNu4lxhHIx3vd_ok-7-i6nkiwh3aPXshwh6NsZwhpQnYKYacLQ_KaCxTPyLMZdadGB4_Ked3m4I1H3ZWCyxTUzoiO_wN-eJq31yVJSWZAaLYOSOKyG_OTa3F_TnSycdPf9HTIF-ZP-1ODxA4I23durlR0p3hxJLe2I4KEkw2KdqjUZAbuqObbE_xBKsKrf9XFprQCqa0jrYl3NTqv_akK9o5itfcQNQaapvAev_EQq3UoObJqT78lC2vazEneC2bHNlr5eNBfn-gYhP9t-4EJaQ1zbYILZsoUwLGod0nCNAagsr8T_LrWAYd--IJFxiwyVX_NYrYxqxXnmDJQEsWhpOCcFv6W4Fq8aCgYKAZsSARUSFQHGX2MiaxeTz25OyiM0YJFRxcxY8Q0370|628a656c-64a4-41a5-9b2d-b7b9ac8cecea\",\n  \"header\": {\n    \"Accept\": \"*/*\",\n    \"Accept-Encoding\": \"gzip, deflate, br, zstd\",\n    \"Accept-Language\": \"vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5\",\n    \"Authorization\": \"Bearer ya29.a0ATi6K2vgkrFNu4lxhHIx3vd_ok-7-i6nkiwh3aPXshwh6NsZwhpQnYKYacLQ_KaCxTPyLMZdadGB4_Ked3m4I1H3ZWCyxTUzoiO_wN-eJq31yVJSWZAaLYOSOKyG_OTa3F_TnSycdPf9HTIF-ZP-1ODxA4I23durlR0p3hxJLe2I4KEkw2KdqjUZAbuqObbE_xBKsKrf9XFprQCqa0jrYl3NTqv_akK9o5itfcQNQaapvAev_EQq3UoObJqT78lC2vazEneC2bHNlr5eNBfn-gYhP9t-4EJaQ1zbYILZsoUwLGod0nCNAagsr8T_LrWAYd--IJFxiwyVX_NYrYxqxXnmDJQEsWhpOCcFv6W4Fq8aCgYKAZsSARUSFQHGX2MiaxeTz25OyiM0YJFRxcxY8Q0370\",\n    \"Content-Type\": \"text/plain;charset=UTF-8\",\n    \"Origin\": \"https://labs.google\",\n    \"Referer\": \"https://labs.google/\",\n    \"Sec-Fetch-Dest\": \"empty\",\n    \"Sec-Fetch-Mode\": \"cors\",\n    \"Sec-Fetch-Site\": \"cross-site\",\n    \"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\",\n    \"X-Browser-Channel\": \"stable\",\n    \"X-Browser-Copyright\": \"Copyright 2025 Google LLC. All Rights reserved.\",\n    \"X-Browser-Validation\": \"Aj9fzfu+SaGLBY9Oqr3S7RokOtM=\",\n    \"X-Browser-Year\": \"2025\",\n    \"X-Client-Data\": \"CIS2yQEIpbbJAQipncoBCLTgygEIlKHLAQiFoM0BCP2bzwEI9p3PAQ==\",\n    \"sec-ch-ua\": \"\\\"Chromium\\\";v=\\\"142\\\", \\\"Google Chrome\\\";v=\\\"142\\\", \\\"Not_A Brand\\\";v=\\\"99\\\"\",\n    \"sec-ch-ua-mobile\": \"?0\",\n    \"sec-ch-ua-platform\": \"\\\"Windows\\\"\"\n  }\n}",
+              "value": "={{ $node[\"Auto_Filter_Token\"].item.json.Token || $json.Token }}",
               "type": "object"
             },
             {
@@ -852,7 +880,34 @@
       "main": [
         [
           {
+            "node": "Fetch_Session",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch_Session": {
+      "main": [
+        [
+          {
+            "node": "Auto_Filter_Token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auto_Filter_Token": {
+      "main": [
+        [
+          {
             "node": "Swicth2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "TOKEN_VEO3",
             "type": "main",
             "index": 0
           }
