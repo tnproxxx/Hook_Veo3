@@ -1,0 +1,1094 @@
+{
+  "name": "Hool_Veo3",
+  "nodes": [
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.method }}",
+                    "rightValue": "text_to_video",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "7fe17285-e9c5-48a2-9d51-55eff4d780bd"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "t2v"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "df094b54-736f-4e56-8217-638fff6623cf",
+                    "leftValue": "={{ $json.body.method }}",
+                    "rightValue": "image_to_video",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "i2v"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "324eb305-d12f-4960-ad02-0893d23a340c",
+                    "leftValue": "={{ $json.body.method }}",
+                    "rightValue": "upscale",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "up"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "aad19565-7922-4ea5-8fc5-4ff19d5f94dd",
+                    "leftValue": "={{ $json.body.method }}",
+                    "rightValue": "extend",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "ex"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "8164a81c-dfcf-4d03-890f-0e91b37e45fd",
+                    "leftValue": "={{ $json.body.method }}",
+                    "rightValue": "text_to_image",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "t2i"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "625e2fa5-073a-45cf-8fe8-50043ae9d226",
+                    "leftValue": "={{ $json.body.method }}",
+                    "rightValue": "image_to_image",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "i2i"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -592,
+        624
+      ],
+      "id": "bbd65dfb-288b-4e21-b671-2f8bae00a963",
+      "name": "Swicth2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7dc30ece-9dd3-4d3c-b768-2b5ea9e5ab08",
+              "name": "body",
+              "value": "={{ $json.body }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -736,
+        688
+      ],
+      "id": "a0f26486-c886-48e4-ae70-695c729940d1",
+      "name": "Body"
+    },
+    {
+      "parameters": {
+        "amount": 11
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        112,
+        496
+      ],
+      "id": "c4115165-2970-4ac5-af6b-9ab05a7ac8d2",
+      "name": "Wait5",
+      "webhookId": "68b0c24f-d32a-4243-96f5-fb88e61b523d"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = items[0].json;\n\nconst operations = item.operations || [];\n\n// Kiểm tra trạng thái còn đang chạy\nconst isActive = operations.some(op =>\n  op.status === \"MEDIA_GENERATION_STATUS_PENDING\" ||\n  op.status === \"MEDIA_GENERATION_STATUS_ACTIVE\"\n);\n\nlet Results;\nlet outputOperations;\n\nif (isActive) {\n  Results = \"ACTIVE\";\n  outputOperations = operations;   // Trả về toàn bộ operations\n} else {\n  Results = \"DONE\";\n  // Lọc SUCCESSFUL\n  outputOperations = operations\n    .filter(op => op.status === \"MEDIA_GENERATION_STATUS_SUCCESSFUL\")\n    .map((op, index) => ({\n      ...op,\n      INDEX: index + 1   // Thêm INDEX bắt đầu từ 1\n    }));\n}\n\nreturn [\n  {\n    json: {\n      Results,\n      operations: outputOperations\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        384,
+        496
+      ],
+      "id": "fe743894-6c0b-421d-b48e-d4da115aae38",
+      "name": "Code13"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "faf06fc0-4262-4619-ae00-2fc21a2182c1",
+              "leftValue": "={{ $json.Results }}",
+              "rightValue": "DONE",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        512,
+        496
+      ],
+      "id": "43b3a47f-d0dc-4ff7-9970-163aa869ecd9",
+      "name": "If_DONE1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://aisandbox-pa.googleapis.com/v1/video:batchCheckAsyncVideoGenerationStatus",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{ JSON.stringify($('Body').item.json.body.token.header) }}",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "Text",
+        "body": "={\n  \"operations\": {{ JSON.stringify($json.operations) }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        496
+      ],
+      "id": "25d34394-d862-44ef-80d1-4b6802dc4f8d",
+      "name": "Check_Stt_Video"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "152c7e33-a222-4995-ab4d-c899f33b3444",
+              "name": "operation",
+              "value": "={{ $json.operations }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        704,
+        496
+      ],
+      "id": "0d76cd0d-c5bb-4b5e-b46d-d8f289dff37a",
+      "name": "Set_Video"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://aisandbox-pa.googleapis.com/v1/projects/{{ $json.project_id }}/flowMedia:batchGenerateImages\n",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{ JSON.stringify($('Body').item.json.body.token.header) }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.payload) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -112,
+        656
+      ],
+      "id": "3f689a9b-a44f-4996-8eec-3bd3d98d23b4",
+      "name": "Banana"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "AutoVeo3_v2",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -912,
+        688
+      ],
+      "id": "f99433cd-a4a3-4208-af6f-c798d2098055",
+      "name": "Hook",
+      "webhookId": "b7b47ab5-b7cf-4815-8052-b9d5e903f8e7"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{ JSON.stringify($('Body').item.json.body.token.header) }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.payload) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -112,
+        496
+      ],
+      "id": "17044ad8-dcfb-42ca-af21-ec2880a24e61",
+      "name": "Veo3",
+      "notesInFlow": false,
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Hàm sinh UUID v4\nfunction generateUUID() {\n  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {\n    const r = Math.random() * 16 | 0;\n    const v = c === 'x' ? r : (r & 0x3 | 0x8);\n    return v.toString(16);\n  });\n}\n\n// Thêm URL ngay trong code\nconst url = \"https://aisandbox-pa.googleapis.com/v1/video:batchAsyncGenerateVideoStartImage\";\n\n// Lấy input từ n8n\nconst root = items[0].json;\nconst body = root.body || {};\n\n// Prompt\nlet prompt = body.prompt ?? root.prompt ?? \"\";\n\nif (typeof prompt === 'object' && prompt !== null) {\n  prompt = JSON.stringify(prompt);\n}\n\n// Parse parameters từ string JSON\nconst rawParams = body.parameters ?? root.parameters ?? \"{}\";\nconst parameters = (typeof rawParams === \"string\") ? JSON.parse(rawParams) : rawParams;\n\n// Start Image (mediaId)\nconst image_start = parameters.image_start;\n\n// API key tách dạng \"api|project_id\"\nconst apiKeyRaw = body.token?.api_key || \"\";\nconst [api, project_id] = apiKeyRaw.split(\"|\");\n\n// Thông số\nconst candidates_count = parameters.candidates_count || 1;\nconst aspect_ratio = parameters.aspect_ratio;\nconst model = parameters.model;\nconst seed = parameters.seed || 0;\n\n// Mảng requests\nconst requests_array = [];\n\n// Sinh request cho từng video\nfor (let i = 0; i < candidates_count; i++) {\n\n  const current_seed = (seed && seed !== 0)\n    ? seed\n    : Math.floor(Math.random() * (99999 - 11111 + 1)) + 11111;\n\n  const scene_id = generateUUID();\n\n  const request_item = {\n    aspectRatio: aspect_ratio,\n    seed: current_seed,\n    textInput: {\n      prompt: prompt\n    },\n    videoModelKey: model,\n\n    startImage: {\n      mediaId: image_start\n    },\n\n    metadata: {\n      sceneId: scene_id\n    }\n  };\n\n  requests_array.push(request_item);\n}\n\n// Payload cuối\nconst payload = {\n  clientContext: {\n    projectId: project_id,\n    tool: \"PINHOLE\",\n    userPaygateTier: \"PAYGATE_TIER_TWO\"\n  },\n  requests: requests_array\n};\n\n// Output cuối\nreturn [\n  {\n    json: {\n      url,         // thêm url vào output\n      payload\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -352,
+        496
+      ],
+      "id": "64e602fd-deba-4426-ae9d-fd756a7646a3",
+      "name": "image2video"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Hàm sinh UUID v4\nfunction generateUUID() {\n  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {\n    const r = Math.random() * 16 | 0;\n    const v = c === 'x' ? r : (r & 0x3 | 0x8);\n    return v.toString(16);\n  });\n}\n\n// URL cố định\nconst url = \"https://aisandbox-pa.googleapis.com/v1/video:batchAsyncGenerateVideoUpsampleVideo\";\n\n// Lấy input từ n8n\nconst root = items[0].json;\nconst body = root.body || {};\n\n// Parse parameters\nconst rawParams = body.parameters ?? \"{}\";\nconst parameters = (typeof rawParams === \"string\") ? JSON.parse(rawParams) : rawParams;\n\n// Tách api_key và project_id\nconst apiKeyRaw = body.token?.api_key || \"\";\nconst [api, project_id] = apiKeyRaw.split(\"|\");\n\n// Thông số\nconst media_id = parameters.mediaId;\nconst video_model = parameters.model;\nconst aspect_ratio = parameters.aspect_ratio;\nconst candidates_count = parameters.candidates_count || 1;\nconst seed_input = parameters.seed || 0;\n\n// Tạo sessionId theo timestamp ms\nconst sessionId = `;${Date.now()}`;\n\n// Mảng requests\nconst requests_array = [];\n\nfor (let i = 0; i < candidates_count; i++) {\n  const current_seed = (seed_input && seed_input !== 0)\n    ? seed_input\n    : Math.floor(Math.random() * (99999 - 11111 + 1)) + 11111;\n\n  const scene_id = generateUUID();\n\n  const request_item = {\n    aspectRatio: aspect_ratio,\n    seed: current_seed,\n    videoInput: {\n      mediaId: media_id\n    },\n    videoModelKey: video_model,\n    metadata: {\n      sceneId: scene_id\n    }\n  };\n\n  requests_array.push(request_item);\n}\n\n// Payload cuối\nconst payload = {\n  clientContext: {\n    sessionId: sessionId\n  },\n  requests: requests_array\n};\n\n// Trả output\nreturn [\n  {\n    json: {\n      url,\n      payload,\n      api_key: api || null,\n      project_id: project_id || null\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -352,
+        624
+      ],
+      "id": "987521e8-21cb-4301-a7e4-2c3da302dd0e",
+      "name": "upscale"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Hàm sinh UUID v4\nfunction generateUUID() {\n  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {\n    const r = Math.random() * 16 | 0;\n    const v = c === 'x' ? r : (r & 0x3 | 0x8);\n    return v.toString(16);\n  });\n}\n\n// ===== FIXED URL =====\nconst url = \"https://aisandbox-pa.googleapis.com/v1/video:batchAsyncGenerateVideoExtendVideo\";\n\n// Lấy input\nconst root = items[0].json;\nconst body = root.body || {};\n\n// Lấy prompt (root hoặc body)\nlet prompt = body.prompt ?? root.prompt ?? \"\";\nif (typeof prompt === 'object' && prompt !== null) prompt = JSON.stringify(prompt);\n\n// Parse parameters (hỗ trợ string JSON)\nconst rawParams = body.parameters ?? root.parameters ?? \"{}\";\nconst parameters = (typeof rawParams === \"string\") ? JSON.parse(rawParams) : rawParams;\n\n// Tách api_key|project_id (nếu có)\nconst apiKeyRaw = body.token?.api_key || body.token?.apiKey || \"\";\nconst [api, project_id] = apiKeyRaw.split(\"|\");\n\n// Thông số cơ bản\nconst video_model = parameters.model;\nconst media_id = parameters.mediaId;\nconst aspect_ratio = parameters.aspect_ratio || parameters.aspectRatio;\nconst candidates_count = parameters.candidates_count || 1;\nconst seed_input = parameters.seed || 0;\n\n// Lấy start / end frame: hỗ trợ các biến tên khác nhau hoặc mảng\nlet start_frame_index = parameters.startFrameIndex ?? parameters.start_frame_index ?? null;\nlet end_frame_index = parameters.endFrameIndex ?? parameters.end_frame_index ?? null;\n\n// Nếu là mảng [start,end]\nif (Array.isArray(start_frame_index) && start_frame_index.length >= 1) {\n  if (start_frame_index.length >= 2) {\n    end_frame_index = start_frame_index[1];\n  }\n  start_frame_index = start_frame_index[0];\n}\n\n// Nếu dạng chuỗi \"168,191\"\nif (typeof start_frame_index === 'string' && start_frame_index.includes(',')) {\n  const parts = start_frame_index.split(',').map(s => s.trim());\n  start_frame_index = Number(parts[0]) || start_frame_index;\n  if (parts[1]) end_frame_index = Number(parts[1]) || end_frame_index;\n}\n\n// Mảng requests\nconst requests_array = [];\n\nfor (let i = 0; i < candidates_count; i++) {\n  const current_seed = (seed_input && seed_input !== 0)\n    ? seed_input\n    : Math.floor(Math.random() * (99999 - 11111 + 1)) + 11111;\n\n  const scene_id = generateUUID();\n\n  const request_item = {\n    textInput: {\n      prompt: prompt\n    },\n    videoInput: {\n      mediaId: media_id\n    },\n    videoModelKey: video_model,\n    aspectRatio: aspect_ratio,\n    seed: current_seed,\n    metadata: {\n      sceneId: scene_id\n    }\n  };\n\n  // Add start/end frame if exists\n  if (start_frame_index !== null && start_frame_index !== undefined) {\n    request_item.videoInput.startFrameIndex = Number(start_frame_index);\n  }\n  if (end_frame_index !== null && end_frame_index !== undefined) {\n    request_item.videoInput.endFrameIndex = Number(end_frame_index);\n  }\n\n  requests_array.push(request_item);\n}\n\n// Tạo payload\nconst payload = {\n  clientContext: {\n    projectId: project_id || null,\n    tool: \"PINHOLE\",\n    userPaygateTier: \"PAYGATE_TIER_TWO\"\n  },\n  requests: requests_array\n};\n\n// Trả output\nreturn [\n  {\n    json: {\n      payload,\n      api_key: api || null,\n      project_id: project_id || null,\n      url     // <<< trả biến url cố định\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -352,
+        752
+      ],
+      "id": "acb4663e-4ae8-4c00-8a30-5b62f4524d27",
+      "name": "extend"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy input\nconst root = items[0].json;\nconst body = root.body || {};\n\n// Lấy prompt\nlet prompt = root.prompt ?? body.prompt ?? \"\";\n\n// Nếu prompt là object → stringify\nif (typeof prompt === \"object\" && prompt !== null) {\n  prompt = JSON.stringify(prompt);\n}\n\n// Parse parameters\nconst rawParams = root.parameters ?? body.parameters ?? \"{}\";\nconst parameters = (typeof rawParams === \"string\") ? JSON.parse(rawParams) : rawParams;\n\n// Tách api_key và project_id\nconst apiKeyRaw = body.token?.api_key || \"\";\nconst [api, project_id] = apiKeyRaw.split(\"|\");\n\n// Lấy thông số\nconst candidates_count = parameters.candidates_count || 1;\nconst aspect_ratio = parameters.aspect_ratio;\nconst model_name = parameters.model;\nconst seed = parameters.seed || 0;\n\n// Lấy danh sách mediaId referenceImages (có thể 1–8)\nconst referenceImages = Array.isArray(parameters.referenceImages)\n  ? parameters.referenceImages\n  : [];\n\n// Tạo sessionId\nconst session_id = `;${Date.now()}`;\n\n// --- Tạo mảng requests ---\nconst requests_array = [];\n\nfor (let i = 0; i < candidates_count; i++) {\n\n  // Seed cho mỗi request\n  const current_seed = (seed && seed !== 0)\n    ? seed\n    : Math.floor(Math.random() * (999999 - 11111 + 1)) + 11111;\n\n  // Tạo imageInputs từ referenceImages\n  const image_inputs = referenceImages.map(media_id => ({\n    name: media_id,\n    imageInputType: \"IMAGE_INPUT_TYPE_REFERENCE\"\n  }));\n\n  // Tạo request item theo cấu trúc REQUIRED\n  const request_item = {\n    clientContext: {\n      sessionId: session_id\n    },\n    seed: current_seed,\n    imageModelName: model_name,\n    imageAspectRatio: aspect_ratio,\n    prompt: prompt,\n    imageInputs: image_inputs   // chứa các media IDs\n  };\n\n  requests_array.push(request_item);\n}\n\n// Payload cuối\nconst payload = {\n  requests: requests_array\n};\n\n// Trả output\nreturn [\n  {\n    json: {\n      payload,\n      api_key: api || null,\n      project_id: project_id || null\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -352,
+        1024
+      ],
+      "id": "81bece2d-8674-44eb-a640-30de212033bc",
+      "name": "image2image"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Hàm sinh UUID v4\nfunction generateUUID() {\n  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {\n    const r = Math.random() * 16 | 0;\n    const v = c === 'x' ? r : (r & 0x3 | 0x8);\n    return v.toString(16);\n  });\n}\n\n// Thêm URL ngay trong code\nconst url = \"https://aisandbox-pa.googleapis.com/v1/video:batchAsyncGenerateVideoText\";\n\n// Lấy input từ n8n\nconst root = items[0].json;\nconst body = root.body || {};\n\n// Prompt\nlet prompt = body.prompt ?? root.prompt ?? \"\";\n\n// Nếu prompt là object -> stringify\nif (typeof prompt === 'object' && prompt !== null) {\n  prompt = JSON.stringify(prompt);\n}\n\n// Parse parameters từ string\nconst rawParams = body.parameters ?? root.parameters ?? \"{}\";\nconst parameters = (typeof rawParams === \"string\") ? JSON.parse(rawParams) : rawParams;\n\n// Tách api và project_id (định dạng api|project)\nconst apiKeyRaw = body.token?.api_key || \"\";\nconst [api, project_id] = apiKeyRaw.split(\"|\");\n\n// Các thông số\nconst candidates_count = parameters.candidates_count || 1;\nconst aspect_ratio = parameters.aspect_ratio;\nconst model = parameters.model;\nconst seed = parameters.seed || 0; // seed cố định nếu có, else 0\n\n// Mảng requests và seeds thực tế\nconst requests_array = [];\nconst actual_seeds = [];\n\n// Sinh payload cho từng video\nfor (let i = 0; i < candidates_count; i++) {\n\n  // Nếu seed có sẵn thì dùng, nếu không thì random\n  const current_seed = (seed && seed !== 0)\n    ? seed\n    : Math.floor(Math.random() * (99999 - 11111 + 1)) + 11111;\n\n  actual_seeds.push(current_seed);\n\n  // Sinh scene_id random\n  const scene_id = generateUUID();\n\n  // Tạo request item theo đúng cấu trúc bạn yêu cầu\n  const request_item = {\n    aspectRatio: aspect_ratio,\n    seed: current_seed,\n    textInput: {\n      prompt: prompt\n    },\n    videoModelKey: model,\n    metadata: {\n      sceneId: scene_id\n    }\n  };\n\n  requests_array.push(request_item);\n}\n\n// Payload cuối cùng\nconst payload = {\n  clientContext: {\n    projectId: project_id,\n    tool: \"PINHOLE\",\n    userPaygateTier: \"PAYGATE_TIER_TWO\"\n  },\n  requests: requests_array\n};\n\n// Trả output\nreturn [\n  {\n    json: {\n      url,         // thêm url vào output      \n      payload\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -352,
+        368
+      ],
+      "id": "31232401-1ec7-48ae-9a38-97d3594a1397",
+      "name": "text2video"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy input\nconst root = items[0].json;\nconst body = root.body || {};\n\n// Lấy prompt\nlet prompt = root.prompt ?? body.prompt ?? \"\";\n\n// Nếu prompt là object → stringify\nif (typeof prompt === \"object\" && prompt !== null) {\n  prompt = JSON.stringify(prompt);\n}\n\n// Parse parameters\nconst rawParams = root.parameters ?? body.parameters ?? \"{}\";\nconst parameters = (typeof rawParams === \"string\") ? JSON.parse(rawParams) : rawParams;\n\n// Tách api_key và project_id\nconst apiKeyRaw = body.token?.api_key || \"\";\nconst [api, project_id] = apiKeyRaw.split(\"|\");\n\n// Lấy thông số\nconst candidates_count = parameters.candidates_count || 1;\nconst aspect_ratio = parameters.aspect_ratio;\nconst model_name = parameters.model;\nconst seed = parameters.seed || 0;\n\n// Tạo sessionId\nconst session_id = `;${Date.now()}`;\n\n// --- Tạo mảng requests ---\nconst requests_array = [];\n\nfor (let i = 0; i < candidates_count; i++) {\n\n  // Tạo seed cho mỗi request\n  const current_seed = (seed && seed !== 0)\n    ? seed\n    : Math.floor(Math.random() * (999999 - 11111 + 1)) + 11111;\n\n  // Tạo request item theo cấu trúc bạn yêu cầu\n  const request_item = {\n    clientContext: {\n      sessionId: session_id\n    },\n    seed: current_seed,\n    imageModelName: model_name,\n    imageAspectRatio: aspect_ratio,\n    prompt: prompt,\n    imageInputs: []   // Rỗng cho text_to_image\n  };\n\n  requests_array.push(request_item);\n}\n\n// Payload cuối\nconst payload = {\n  requests: requests_array\n};\n\n// Trả output\nreturn [\n  {\n    json: {\n      payload,\n      api_key: api || null,\n      project_id: project_id || null\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -352,
+        880
+      ],
+      "id": "1f68cea7-61f6-48d2-a0d5-30aad7c0ce40",
+      "name": "text2image"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        912
+      ],
+      "id": "0e73378b-52bd-4ddc-a706-835f38d7ae3e",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        912
+      ],
+      "id": "de3b4e31-b73c-4e62-8994-b9fa0a967a00",
+      "name": "Wait1",
+      "webhookId": "59ed314b-4593-468f-8490-ff850ca33da9"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('TOKEN_VEO3').item.json.Url_hook }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "method",
+              "value": "image_to_video"
+            },
+            {
+              "name": "token",
+              "value": "={{ $('TOKEN_VEO3').item.json.Token }}"
+            },
+            {
+              "name": "prompt",
+              "value": "={{ $('TOKEN_VEO3').item.json.prompt_video }}"
+            },
+            {
+              "name": "parameters",
+              "value": "={\n  \"model\": \"veo_3_1_i2v_s_fast_ultra\",\n  \"aspect_ratio\": \"VIDEO_ASPECT_RATIO_LANDSCAPE\",\n  \"candidates_count\": 2,\n  \"image_start\": \"{{ $json.media[0].image.generatedImage.mediaGenerationId }}\"\n}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 666000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        768,
+        832
+      ],
+      "id": "af95f2e1-3fe8-4a8a-8634-609711a2d482",
+      "name": "image_2_video",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('TOKEN_VEO3').item.json.Url_hook }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "method",
+              "value": "text_to_video"
+            },
+            {
+              "name": "token",
+              "value": "={{ $('TOKEN_VEO3').item.json.Token }}"
+            },
+            {
+              "name": "prompt",
+              "value": "={{ $('TOKEN_VEO3').item.json.prompt_text }}"
+            },
+            {
+              "name": "parameters",
+              "value": "={\n  \"model\": \"veo_3_1_t2v_fast_ultra\",\n  \"aspect_ratio\": \"VIDEO_ASPECT_RATIO_LANDSCAPE\",\n  \"candidates_count\": 1\n}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 666000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        416,
+        992
+      ],
+      "id": "42229e62-283f-4a29-9903-c0a5fa32d33f",
+      "name": "text_2_video",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('TOKEN_VEO3').item.json.Url_hook }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "method",
+              "value": "text_to_image"
+            },
+            {
+              "name": "token",
+              "value": "={{ $('TOKEN_VEO3').item.json.Token }}"
+            },
+            {
+              "name": "prompt",
+              "value": "={{ $('TOKEN_VEO3').item.json.prompt_text }}"
+            },
+            {
+              "name": "parameters",
+              "value": "={\n  \"model\": \"IMAGEN_3_5\",\n  \"aspect_ratio\": \"IMAGE_ASPECT_RATIO_LANDSCAPE\",\n  \"candidates_count\": 1\n}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 222000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        416,
+        832
+      ],
+      "id": "17702768-cc0c-4858-9413-343ed04620cd",
+      "name": "text_2_image",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('TOKEN_VEO3').item.json.Url_hook }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "method",
+              "value": "image_to_image"
+            },
+            {
+              "name": "token",
+              "value": "={{ $('TOKEN_VEO3').item.json.Token }}"
+            },
+            {
+              "name": "prompt",
+              "value": "={{ $('TOKEN_VEO3').item.json.prompt_image }}"
+            },
+            {
+              "name": "parameters",
+              "value": "={\n  \"model\": \"GEM_PIX\",\n  \"aspect_ratio\": \"IMAGE_ASPECT_RATIO_LANDSCAPE\",\n  \"candidates_count\": 1,\n  \"referenceImages\":[\"{{ $json.media[0].image.generatedImage.mediaGenerationId }}\"]\n}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 222000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        592,
+        832
+      ],
+      "id": "06238ad2-a28a-4dc1-91e5-e6e049ef8a61",
+      "name": "image_2_image",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('TOKEN_VEO3').item.json.Url_hook }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "method",
+              "value": "extend"
+            },
+            {
+              "name": "token",
+              "value": "={{ $('TOKEN_VEO3').item.json.Token }}"
+            },
+            {
+              "name": "prompt",
+              "value": "={{ $('TOKEN_VEO3').item.json.prompt_extend }}"
+            },
+            {
+              "name": "parameters",
+              "value": "={\n  \"model\": \"veo_3_1_extend_fast_landscape_ultra\",\n  \"mediaId\": \"{{ $json.operation[0].operation.metadata.video.mediaGenerationId }}\",\n  \"startFrameIndex\": 168,\n  \"startFrameIndex\": 191,\n  \"aspect_ratio\": \"VIDEO_ASPECT_RATIO_LANDSCAPE\",\n  \"candidates_count\": 1\n}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 666000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        592,
+        992
+      ],
+      "id": "0f95e815-4ede-4fd4-94a5-818a9ff724e7",
+      "name": "extend_video",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('TOKEN_VEO3').item.json.Url_hook }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "method",
+              "value": "upscale"
+            },
+            {
+              "name": "token",
+              "value": "={{ $('TOKEN_VEO3').item.json.Token }}"
+            },
+            {
+              "name": "prompt",
+              "value": "={{ $('TOKEN_VEO3').item.json.prompt_text }}"
+            },
+            {
+              "name": "parameters",
+              "value": "={\n  \"model\": \"veo_2_1080p_upsampler_8s\",\n  \"aspect_ratio\": \"VIDEO_ASPECT_RATIO_LANDSCAPE\",\n  \"mediaId\": \"{{ $json.operation[0].operation.metadata.video.mediaGenerationId }}\"\n}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 666000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        768,
+        992
+      ],
+      "id": "6f16046f-1877-4d04-ac9d-1b73231626bd",
+      "name": "upscale_video",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "content": "# Example:",
+        "height": 320,
+        "width": 1040,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        816
+      ],
+      "id": "8c662ce8-93da-420a-800e-d875472a3580",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "95ffff0a-f547-4a27-a101-05d51e120191",
+              "name": "Token",
+              "value": "={\n  \"api_key\": \"ya29.a0ATi6K2vgkrFNu4lxhHIx3vd_ok-7-i6nkiwh3aPXshwh6NsZwhpQnYKYacLQ_KaCxTPyLMZdadGB4_Ked3m4I1H3ZWCyxTUzoiO_wN-eJq31yVJSWZAaLYOSOKyG_OTa3F_TnSycdPf9HTIF-ZP-1ODxA4I23durlR0p3hxJLe2I4KEkw2KdqjUZAbuqObbE_xBKsKrf9XFprQCqa0jrYl3NTqv_akK9o5itfcQNQaapvAev_EQq3UoObJqT78lC2vazEneC2bHNlr5eNBfn-gYhP9t-4EJaQ1zbYILZsoUwLGod0nCNAagsr8T_LrWAYd--IJFxiwyVX_NYrYxqxXnmDJQEsWhpOCcFv6W4Fq8aCgYKAZsSARUSFQHGX2MiaxeTz25OyiM0YJFRxcxY8Q0370|628a656c-64a4-41a5-9b2d-b7b9ac8cecea\",\n  \"header\": {\n    \"Accept\": \"*/*\",\n    \"Accept-Encoding\": \"gzip, deflate, br, zstd\",\n    \"Accept-Language\": \"vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5\",\n    \"Authorization\": \"Bearer ya29.a0ATi6K2vgkrFNu4lxhHIx3vd_ok-7-i6nkiwh3aPXshwh6NsZwhpQnYKYacLQ_KaCxTPyLMZdadGB4_Ked3m4I1H3ZWCyxTUzoiO_wN-eJq31yVJSWZAaLYOSOKyG_OTa3F_TnSycdPf9HTIF-ZP-1ODxA4I23durlR0p3hxJLe2I4KEkw2KdqjUZAbuqObbE_xBKsKrf9XFprQCqa0jrYl3NTqv_akK9o5itfcQNQaapvAev_EQq3UoObJqT78lC2vazEneC2bHNlr5eNBfn-gYhP9t-4EJaQ1zbYILZsoUwLGod0nCNAagsr8T_LrWAYd--IJFxiwyVX_NYrYxqxXnmDJQEsWhpOCcFv6W4Fq8aCgYKAZsSARUSFQHGX2MiaxeTz25OyiM0YJFRxcxY8Q0370\",\n    \"Content-Type\": \"text/plain;charset=UTF-8\",\n    \"Origin\": \"https://labs.google\",\n    \"Referer\": \"https://labs.google/\",\n    \"Sec-Fetch-Dest\": \"empty\",\n    \"Sec-Fetch-Mode\": \"cors\",\n    \"Sec-Fetch-Site\": \"cross-site\",\n    \"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\",\n    \"X-Browser-Channel\": \"stable\",\n    \"X-Browser-Copyright\": \"Copyright 2025 Google LLC. All Rights reserved.\",\n    \"X-Browser-Validation\": \"Aj9fzfu+SaGLBY9Oqr3S7RokOtM=\",\n    \"X-Browser-Year\": \"2025\",\n    \"X-Client-Data\": \"CIS2yQEIpbbJAQipncoBCLTgygEIlKHLAQiFoM0BCP2bzwEI9p3PAQ==\",\n    \"sec-ch-ua\": \"\\\"Chromium\\\";v=\\\"142\\\", \\\"Google Chrome\\\";v=\\\"142\\\", \\\"Not_A Brand\\\";v=\\\"99\\\"\",\n    \"sec-ch-ua-mobile\": \"?0\",\n    \"sec-ch-ua-platform\": \"\\\"Windows\\\"\"\n  }\n}",
+              "type": "object"
+            },
+            {
+              "id": "75ac8e1e-7b15-4aa7-9754-d837e5ac01dd",
+              "name": "Url_hook",
+              "value": "http://localhost:5678/webhook/AutoVeo3_v2",
+              "type": "string"
+            },
+            {
+              "id": "26548430-88a0-447f-996d-00444fef6013",
+              "name": "prompt_text",
+              "value": "A woman",
+              "type": "string"
+            },
+            {
+              "id": "3644f54b-eedb-4029-a7f1-3bf657981ff6",
+              "name": "prompt_video",
+              "value": "=A woman smile",
+              "type": "string"
+            },
+            {
+              "id": "6eb29ffa-c8a3-4db3-8f08-f93fe7e624ab",
+              "name": "prompt_extend",
+              "value": "Add a man ",
+              "type": "string"
+            },
+            {
+              "id": "79e698b8-d6ed-4769-9124-881dd124d6a6",
+              "name": "prompt_image",
+              "value": "Add a reg dog",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        80,
+        912
+      ],
+      "id": "66a128ea-fea2-4e60-b971-12c1a03aca39",
+      "name": "TOKEN_VEO3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Swicth2": {
+      "main": [
+        [
+          {
+            "node": "text2video",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "image2video",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "upscale",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "extend",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "text2image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "image2image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Body": {
+      "main": [
+        [
+          {
+            "node": "Swicth2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait5": {
+      "main": [
+        [
+          {
+            "node": "Check_Stt_Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code13": {
+      "main": [
+        [
+          {
+            "node": "If_DONE1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If_DONE1": {
+      "main": [
+        [
+          {
+            "node": "Set_Video",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check_Stt_Video": {
+      "main": [
+        [
+          {
+            "node": "Code13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hook": {
+      "main": [
+        [
+          {
+            "node": "Body",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Veo3": {
+      "main": [
+        [
+          {
+            "node": "Wait5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "image2video": {
+      "main": [
+        [
+          {
+            "node": "Veo3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "upscale": {
+      "main": [
+        [
+          {
+            "node": "Veo3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "extend": {
+      "main": [
+        [
+          {
+            "node": "Veo3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "image2image": {
+      "main": [
+        [
+          {
+            "node": "Banana",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "text2video": {
+      "main": [
+        [
+          {
+            "node": "Veo3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "text2image": {
+      "main": [
+        [
+          {
+            "node": "Banana",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "TOKEN_VEO3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "text_2_video",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "text_2_image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "text_2_video": {
+      "main": [
+        [
+          {
+            "node": "extend_video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "text_2_image": {
+      "main": [
+        [
+          {
+            "node": "image_2_image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "image_2_image": {
+      "main": [
+        [
+          {
+            "node": "image_2_video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "extend_video": {
+      "main": [
+        [
+          {
+            "node": "upscale_video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TOKEN_VEO3": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b15a1749-0557-4fcc-8494-9f70c04fae94",
+  "meta": {
+    "instanceId": "be5187da697871e33a877e3f99478728d6d9f8b28d9dc795c29fecdea3fd26fd"
+  },
+  "id": "QsuFQj8I4EHkUFYW",
+  "tags": []
+}
